@@ -1,5 +1,5 @@
 # craft-shopify
-Craft CMS 4 plugin to handle Shopify products seamless syncing
+Craft CMS 4 plugin to handle Shopify products syncing
 
 # Installation:
 `composer require leogenot/craft-shopify`
