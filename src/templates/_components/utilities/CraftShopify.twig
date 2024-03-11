@@ -1,0 +1,92 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Craft Shopify plugin for Craft CMS
+ *
+ * CraftShopifyUtility Utility Content
+ *
+ 
+ */
+#}
+
+{% import "_includes/forms.twig" as forms %}
+
+<h1>Craft Shopify</h1>
+
+<div>
+  <form class="utility" method="post">
+    {{ csrfInput() }}
+    {{ actionInput('craft-shopify/product/sync-products') }}
+    {{ hiddenInput('productIds', '*') }}
+
+    <h2>Sync Products</h2>
+
+    <div>
+      <button type="submit" class="btn submit">
+        Sync All Products
+      </button>
+    </div>
+  </form>
+</div>
+<hr>
+<div>
+  <form class="utility" method="post">
+    {{ csrfInput() }}
+    {{ actionInput('craft-shopify/product/sync-products') }}
+
+    <h2>Sync Product by Shopify ID</h2>
+    {{ forms.editableTableField({
+      name: 'productIds',
+      id: 'productIds',
+      cols: [{
+        type: 'singleline',
+        heading: 'Product IDs'|t('blitz'),
+        placeholder: '6636263243943',
+        code: true,
+      }],
+      addRowLabel: "Add Product ID"|t('blitz'),
+      first: true,
+      allowAdd: true,
+      allowReorder: true,
+      allowDelete: true,
+    }) }}
+
+    <div>
+      <button type="submit" class="btn submit">
+        Sync Products
+      </button>
+    </div>
+  </form>
+</div>
+<hr>
+<div>
+  <form class="utility" method="post">
+    {{ csrfInput() }}
+    {{ actionInput('craft-shopify/product/purge-products') }}
+
+    <h2>Purge Products</h2>
+    <p>Delete all produts that are no longer on Shopify.</p>
+
+    <div>
+      <button type="submit" class="btn submit">
+        Purge Products
+      </button>
+    </div>
+  </form>
+</div>
+<hr>
+<div>
+  <form class="utility" method="post">
+    {{ csrfInput() }}
+    {{ actionInput('craft-shopify/webhook/purge') }}
+    {{ hiddenInput('olderThan', '30') }}
+
+    <h2>Purge Webhook Records</h2>
+
+    <div>
+      <button type="submit" class="btn submit">
+        Purge Records
+      </button>
+    </div>
+  </form>
+</div>

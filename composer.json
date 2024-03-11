@@ -1,0 +1,47 @@
+{
+    "name": "leogenot/craft-shopify",
+    "type": "craft-plugin",
+    "require": {
+        "php": ">=8.0.2",
+        "craftcms/cms": "^4.7.0",
+        "phpclassic/php-shopify": "^1.2.9",
+        "carlcs/craft-redactorcustomstyles": "^4.0",
+        "craftcms/redactor": "^3.0",
+        "nystudio107/craft-code-field": "4.0.12",
+        "spicyweb/craft-neo": "4.0.3"
+    },
+    "require-dev": {
+        "craftcms/ecs": "dev-main",
+        "craftcms/phpstan": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "leogenot\\craftshopify\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Craft Shopify",
+        "handle": "craft-shopify",
+        "developer": "leogenot",
+        "documentationUrl": "",
+        "components": {
+            "craftShopifyService": "leogenot\\craftshopify\\services\\CraftShopifyService"
+        },
+        "class": "leogenot\\craftshopify\\CraftShopify"
+    },
+    "scripts": {
+        "check-cs": "ecs check --ansi",
+        "fix-cs": "ecs check --ansi --fix",
+        "phpstan": "phpstan --memory-limit=1G"
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "8.0.2"
+        },
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
+    }
+}

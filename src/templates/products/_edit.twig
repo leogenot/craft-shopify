@@ -1,0 +1,75 @@
+{% extends "_layouts/element" %}
+{% import '_includes/forms' as forms %}
+
+{% set title = product.title %}
+{% set element = product %}
+{% set canUpdateSource = true %}
+{% set saveSourceAction = 'craft-shopify/product/save' %}
+{% set redirectUrl = 'craft-shopify/products' %}
+
+{% block details %}
+  {% set data = product.jsonData | json_decode %}
+
+  <div id="preview-thumb-container" class="preview-thumb-container">
+    <div class="preview-thumb">
+      {% if data.image %}
+        <img
+          src="{{ data.image.src }}"
+          alt=""
+          width="190"
+          height="190"
+        />
+      {% endif %}
+    </div>
+  </div>
+
+  <div id="shopifyData" class="meta">
+
+    {% if previewUrl ?? false %}
+    <div class="field">
+      <h5 class="heading">Preview</h5>
+      <div class="value">
+        <a href="{{ previewUrl }}" target="_blank" rel="noopener">
+          Open Preview
+        </a>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="field">
+      <h5 class="heading">Shopify ID</h5>
+      <div class="value">{{ product.shopifyId }}</div>
+    </div>
+
+    <div class="field">
+      <h5 class="heading">Product Slug</h5>
+      <div class="value">{{ product.slug }}</div>
+    </div>
+
+    <div class="field">
+      <h5 class="heading">Product Type</h5>
+      <div class="value">{{ product.productType }}</div>
+    </div>
+
+    <div class="field">
+      <h5 class="heading">Link</h5>
+      <div class="value">
+        <a href="{{ product.getLiveUrl() }}" target="_blank" rel="noopener">
+          View on Shopify
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {{ parent() }}
+
+{% endblock %}
+
+{% block content %}
+  {{ hiddenInput('productId', product.id) }}
+  {{ hiddenInput('shopifyId', product.shopifyId) }}
+
+  <div id="fields">
+    {{ form.render()|raw }}
+  </div>
+{% endblock %}

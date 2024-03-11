@@ -1,0 +1,61 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{% extends 'craft-shopify/settings/_layout' %}
+{% import "_includes/forms" as forms %}
+{% set fullPageForm = true %}
+
+{% set crumbs = [
+  {
+    label: 'Shopify',
+    url: url('craft-shopify/settings/shopify')
+  }
+] %}
+
+{% set selectedSetting = 'shopify' %}
+
+{% block content %}
+  <h2>Connection Info</h2>
+  {{ actionInput('plugins/save-plugin-settings') }}
+  {{ hiddenInput('pluginHandle', plugin.handle) }}
+  {{ csrfInput() }}
+
+  {% namespace 'settings' %}
+    {{ forms.autosuggestField({
+      label: 'Hostname',
+      instructions: '',
+      id: 'hostname',
+      name: 'hostname',
+      suggestEnvVars: true,
+      value: settings['hostname']
+    }) }}
+
+    {{ forms.autosuggestField({
+      label: 'API Key',
+      instructions: '',
+      id: 'apiKey',
+      name: 'apiKey',
+      suggestEnvVars: true,
+      value: settings['apiKey']
+    }) }}
+
+    {{ forms.autosuggestField({
+      label: 'API Password',
+      instructions: '',
+      id: 'apiPassword',
+      name: 'apiPassword',
+      suggestEnvVars: true,
+      value: settings['apiPassword']
+    }) }}
+
+    <hr>
+    {% set notificationUrl = url('https://' ~ parseEnv(settings['hostname']) ~ '/admin/settings/notifications') %}
+    {{ forms.autosuggestField({
+      label: 'Webhook Secret',
+      instructions: 'Secret for verifying integrity of webhooks. This can be found in the [Webhooks section of the notification settings](' ~ notificationUrl ~ ').',
+      id: 'webhookSecret',
+      name: 'webhookSecret',
+      suggestEnvVars: true,
+      value: settings['webhookSecret']
+    }) }}
+
+  {% endnamespace %}
+{% endblock %}
