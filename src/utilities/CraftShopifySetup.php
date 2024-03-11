@@ -70,6 +70,7 @@ class CraftShopifySetup extends Migration {
      */
     public function safeUp(): bool {
         try {
+            $this->createShopifyProductsTable();
             $this->createSections(self::SECTION_CONFIGS);
             $this->createFieldGroups(self::FIELD_GROUP_CONFIGS);
             $this->createFields(self::FIELD_CONFIGS, self::FIELD_GROUP_CONFIGS[0]['name']);
@@ -92,6 +93,7 @@ class CraftShopifySetup extends Migration {
             $this->deleteFields(self::FIELD_CONFIGS);
             $this->deleteFieldGroups(self::FIELD_GROUP_CONFIGS);
             $this->deleteSections(self::SECTION_CONFIGS);
+            $this->removeShopifyProductsTable();
         } catch (\Throwable $e) {
             throw $e;
             return false;
@@ -130,6 +132,51 @@ class CraftShopifySetup extends Migration {
             if (!Craft::$app->sections->saveSection($section)) {
                 echo "Section {$handle} could not be saved" . PHP_EOL;
             }
+        }
+    }
+    /**
+     * Create Products DB
+     *
+     * @param array $sectionConfigs
+     * @return void
+     * @throws \Throwable
+     * @throws SectionNotFoundException
+     * @throws SiteNotFoundException
+     */
+    protected function createShopifyProductsTable(): void {
+        $db = Craft::$app->getDb();
+        $tableName = 'shopifyproducts';
+
+        if (!$db->tableExists($tableName)) {
+            $db->createCommand('CREATE TABLE `shopifyproducts` (
+            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `bodyHtml` mediumtext,
+            `bodyHtmlMetafieldId` bigint DEFAULT NULL,
+            `shopifyId` bigint DEFAULT NULL,
+            `jsonData` mediumtext,
+            `productType` text,
+            `dateCreated` datetime DEFAULT NULL,
+            `dateUpdated` datetime DEFAULT NULL,
+            `uid` char(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=19723 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;')->execute();
+        }
+    }
+    /**
+     * Remove Products DB
+     *
+     * @param array $sectionConfigs
+     * @return void
+     * @throws \Throwable
+     * @throws SectionNotFoundException
+     * @throws SiteNotFoundException
+     */
+    protected function removeShopifyProductsTable(): void {
+        $db = Craft::$app->getDb();
+        $tableName = 'shopifyproducts';
+
+        if ($db->tableExists($tableName)) {
+            $db->createCommand('DROP TABLE `shopifyproducts`')->execute();
         }
     }
 
