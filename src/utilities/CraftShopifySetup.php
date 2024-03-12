@@ -60,6 +60,9 @@ class CraftShopifySetup extends Migration {
             'class' => Code::class,
             'name' => 'JSON Data',
             'handle' => 'productJsonData',
+            'language' => 'json',
+            'showLanguageDropdown' => false,
+            'codeFolding' => true,
         ],
     ];
 
