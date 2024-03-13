@@ -51,6 +51,12 @@ class CraftShopifySetup extends Migration {
             'instructions' => 'Enter the Shopify ID here.',
         ],
         [
+            'class' => PlainText::class,
+            'name' => 'Vendor',
+            'handle' => 'productVendor',
+            'instructions' => 'Enter the Shopify vendor here.',
+        ],
+        [
             'class' => Redactor::class,
             'name' => 'Product description',
             'handle' => 'productDescription',
@@ -154,6 +160,7 @@ class CraftShopifySetup extends Migration {
             $db->createCommand('CREATE TABLE `shopifyproducts` (
             `id` int unsigned NOT NULL AUTO_INCREMENT,
             `bodyHtml` mediumtext,
+            `vendor` text,
             `bodyHtmlMetafieldId` bigint DEFAULT NULL,
             `shopifyId` bigint DEFAULT NULL,
             `jsonData` mediumtext,

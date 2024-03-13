@@ -66,22 +66,6 @@ class ProductService extends Component {
      * @param Product $product Product model instance
      * @param array $shopifyProduct Shopify product data
      */
-    // public function populateProductModel(Product $product, $shopifyProduct) {
-    //     // Encode Shopify product data as JSON and assign to product model attributes
-    //     $product->jsonData = Json::encode($shopifyProduct);
-    //     $product->title = $shopifyProduct['title'];
-    //     $product->slug = $shopifyProduct['handle'];
-    //     $product->dateCreated = new DateTime($shopifyProduct['created_at']);
-    //     $product->datePublished = new DateTime($shopifyProduct['published_at']);
-    //     $product->dateUpdated = new DateTime($shopifyProduct['updated_at']);
-    //     $product->productType = $shopifyProduct['product_type'];
-    //     $product->publishedScope = $shopifyProduct['published_scope'] ?? '';
-    //     $product->tags = $shopifyProduct['tags'] ?? '';
-    //     $product->status = $shopifyProduct['status'] ?? '';
-    //     $product->adminGraphQlApiId = $shopifyProduct['admin_graph_ql_api_id'] ?? '';
-    //     $product->variants = $shopifyProduct['variants'] ?? '';
-    //     $product->bodyHtml = $shopifyProduct['body_html'] ?? '';
-    // }
     public function populateProductModel(Product $product, $shopifyProduct) {
         // Encode Shopify product data as JSON and assign to product model attributes
         $product->jsonData = Json::encode($shopifyProduct);
@@ -91,6 +75,7 @@ class ProductService extends Component {
         $product->dateUpdated = new DateTime($shopifyProduct['updated_at']);
         $product->productType = $shopifyProduct['product_type'];
         $product->bodyHtml = $shopifyProduct['body_html'] ?? '';
+        $product->vendor = $shopifyProduct['vendor'] ?? '';
     }
     /**
      * Populate the Craft entry with Shopify response data
@@ -105,6 +90,7 @@ class ProductService extends Component {
         $entry->setFieldValue('shopifyId', $shopifyProduct['id']);
         $entry->setFieldValue('productDescription', $shopifyProduct['body_html']);
         $entry->setFieldValue('productJsonData',  json_encode($shopifyProduct));
+        $entry->setFieldValue('productVendor', $shopifyProduct['vendor']);
     }
 
     /**
@@ -180,39 +166,11 @@ class ProductService extends Component {
      * @throws Exception
      */
     public function updateRelatedProducts(Entry $entry) {
-        // Retrieve related products
-        // $relatedProducts = Product::find()
-        //     ->relatedTo($entry)
-        //     ->all();
-
         // Push job to update related products
-        // throw new Exception('title' . $entry->id);
-        // foreach ($relatedProducts as $product) {
         Craft::$app->getQueue()->push(new PushProductData([
             'productId' => $entry->shopifyId,
-            // 'entry' => $entry
         ]));
-        // Call pushDataToShopify function here
         CraftShopify::$plugin->product->pushDataToShopify($entry);
-        // }
-
-        // Retrieve related blocks
-        // $relatedBlocks = Block::find()
-        // ->relatedTo($entry)
-        // ->all();
-
-        // // Push job to update related blocks
-        // foreach ($relatedBlocks as $block) {
-        // if ($owner = $block->getOwner()) {
-        // if ($owner instanceof Product) {
-        // Craft::$app->getQueue()->push(new PushProductData([
-        // 'productId' => $owner->id
-        // ]));
-        // // Call pushDataToShopify function here
-        // CraftShopify::$plugin->product->pushDataToShopify($owner);
-        // }
-        // }
-        // }
     }
 
     /**
@@ -227,29 +185,18 @@ class ProductService extends Component {
         // Get Shopify client
         $client = CraftShopify::$plugin->shopify->getClient();
 
-        // Get the entry associated with the product
-        // $entry = $product->getEntry();
-
-        // If entry doesn't exist or doesn't have a Shopify ID field set, return
-        // if (!$entry || !$entry->shopifyId) {
-        //     Craft::error('Entry not found or Shopify ID not set for product ' . $entry->id, __METHOD__);
-        //     return;
-        // }
-        // Prepare data to be updated on Shopify
         $data = [
             'id' => $entry->shopifyId, // Shopify ID of the product
             'title' => $entry->title, // Map Craft CMS title to Shopify title
             'handle' => $entry->slug, // Map Craft CMS title to Shopify title
             'body_html' => $entry->productDescription, // Map Craft CMS title to Shopify title
-            // 'body_html' => $entry->productDescription, // Map Craft CMS product description to Shopify body_html
+            'vendor' => $entry->productVendor, // Map Craft CMS title to Shopify title
             // Map other Craft CMS fields to corresponding Shopify fields as needed
         ];
 
         // Update the product on Shopify
         try {
-            // $client->Product->put($data); // Use the Shopify SDK to update the product
             CraftShopify::$plugin->shopify->pushProduct($data);
-            // Craft::info('Product updated successfully on Shopify: ' . $entry->shopifyId, __METHOD__);
         } catch (ApiException $e) {
             Craft::error('Failed to update product on Shopify: ' . $e->getMessage(), __METHOD__);
             throw $e; // Rethrow the exception to handle it at a higher level if needed

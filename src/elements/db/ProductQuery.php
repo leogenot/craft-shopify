@@ -58,6 +58,7 @@ class ProductQuery extends ElementQuery {
             'shopifyproducts.jsonData',
             'shopifyproducts.productType',
             'shopifyproducts.bodyHtml',
+            'shopifyproducts.vendor',
             'shopifyproducts.bodyHtmlMetafieldId'
         ]);
 
